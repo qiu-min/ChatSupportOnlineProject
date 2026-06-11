@@ -1,0 +1,32 @@
+@ChatSupportOnline.Api_HostAddress = http://localhost:5050
+@accessToken = replace_me
+
+### 注册用户并获取 JWT
+POST {{ChatSupportOnline.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "userName": "agent01",
+  "displayName": "客服小顾",
+  "password": "123456",
+  "role": 2
+}
+
+### 使用用户名密码登录并获取 JWT
+POST {{ChatSupportOnline.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "userName": "agent01",
+  "password": "123456"
+}
+
+### 获取当前登录用户信息
+GET {{ChatSupportOnline.Api_HostAddress}}/api/auth/me
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 访问受 JWT 保护的用户列表接口
+GET {{ChatSupportOnline.Api_HostAddress}}/api/users
+Authorization: Bearer {{accessToken}}
+Accept: application/json
