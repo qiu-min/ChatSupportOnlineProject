@@ -11,10 +11,6 @@ public class CreateConversationRequest
     /// </summary>
     public string Subject { get; set; } = string.Empty;
 
-    /// <summary>
-    /// 客户 Id。
-    /// </summary>
-    public Guid CustomerId { get; set; }
 
     /// <summary>
     /// 客服 Id。

@@ -14,6 +14,7 @@ namespace ChatSupportOnline.Api.Controllers;
 /// 认证控制器。
 /// 负责注册、登录以及读取当前登录用户信息，是 JWT 学习阶段的核心入口。
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -36,6 +37,7 @@ public class AuthController : ControllerBase
     /// 注册新用户。
     /// 注册成功后会直接返回 JWT，方便前端完成“注册即登录”的体验。
     /// </summary>
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<ApiResponse<AuthResponse>>> Register([FromBody] RegisterRequest request)
     {
@@ -76,6 +78,7 @@ public class AuthController : ControllerBase
     /// 先校验用户名是否存在，再校验密码哈希，全部通过后返回 JWT。
     /// </summary>
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<ActionResult<ApiResponse<AuthResponse>>> Login([FromBody] LoginRequest request)
     {
         var userName = request.UserName.Trim();
@@ -106,7 +109,6 @@ public class AuthController : ControllerBase
     /// 这个接口可以帮助你观察 JWT 里的 Claim 最终是如何映射回业务用户的。
     /// </summary>
     [HttpGet("me")]
-    [Authorize]
     public async Task<ActionResult<ApiResponse<CurrentUserResponse>>> GetCurrentUser()
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);

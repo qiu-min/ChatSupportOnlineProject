@@ -2,8 +2,10 @@ using ChatSupportOnline.Api.Contracts.Common;
 using ChatSupportOnline.Api.Contracts.Conversations;
 using ChatSupportOnline.Api.Data;
 using ChatSupportOnline.Api.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ChatSupportOnline.Api.Controllers;
 
@@ -13,6 +15,7 @@ namespace ChatSupportOnline.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ConversationsController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
@@ -79,12 +82,17 @@ public class ConversationsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ApiResponse<Conversation>>> CreateConversation([FromBody] CreateConversationRequest request)
     {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(ApiResponse<Conversation>.Fail("无法识别当前登录用户。"));
+        }
         if (string.IsNullOrWhiteSpace(request.Subject))
         {
             return BadRequest(ApiResponse<Conversation>.Fail("会话主题不能为空。"));
         }
 
-        var customer = await _dbContext.Users.FindAsync(request.CustomerId);
+        var customer = await _dbContext.Users.FindAsync(userId);
         if (customer is null)
         {
             return BadRequest(ApiResponse<Conversation>.Fail("客户不存在。"));
@@ -102,7 +110,7 @@ public class ConversationsController : ControllerBase
         var conversation = new Conversation
         {
             Subject = request.Subject.Trim(),
-            CustomerId = request.CustomerId,
+            CustomerId = userId,
             AgentId = request.AgentId
         };
 

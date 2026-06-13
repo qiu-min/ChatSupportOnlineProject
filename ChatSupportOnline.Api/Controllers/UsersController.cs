@@ -15,6 +15,7 @@ namespace ChatSupportOnline.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
@@ -28,10 +29,8 @@ public class UsersController : ControllerBase
 
     /// <summary>
     /// 获取所有用户。
-    /// 这里加上授权特性，用来演示 JWT 生效后如何保护接口。
     /// </summary>
     [HttpGet]
-    [Authorize]
     public async Task<ActionResult<ApiResponse<IEnumerable<User>>>> GetUsers()
     {
         var users = await _dbContext.Users

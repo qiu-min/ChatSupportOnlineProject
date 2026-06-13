@@ -18,9 +18,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// 注册 OpenAPI 文档，方便我们在开发阶段测试接口。
-builder.Services.AddOpenApi();
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 // 绑定 JWT 配置，后续生成和校验 Token 时都使用这一组配置。
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection(JwtOptions.SectionName));
@@ -72,7 +71,8 @@ var app = builder.Build();
 // 仅在开发环境暴露 OpenAPI 文档，避免生产环境默认公开接口元数据。
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

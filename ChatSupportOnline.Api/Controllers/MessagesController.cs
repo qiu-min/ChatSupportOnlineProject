@@ -2,6 +2,7 @@ using ChatSupportOnline.Api.Contracts.Common;
 using ChatSupportOnline.Api.Contracts.Messages;
 using ChatSupportOnline.Api.Data;
 using ChatSupportOnline.Api.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ namespace ChatSupportOnline.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class MessagesController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
